@@ -13,6 +13,7 @@ namespace FirstExcelAddIn
     {
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+        this.Application.WorkbookBeforeSave += new Microsoft.Office.Interop.Excel.AppEvents_WorkbookBeforeSaveEventHandler(Application_WorkbookBeforeSave);
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -30,7 +31,18 @@ namespace FirstExcelAddIn
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
-        
+
         #endregion
+
+        void Application_WorkbookBeforeSave(Microsoft.Office.Interop.Excel.Workbook Wb, bool SaveAsUI, ref bool Cancel)
+        {
+            Excel.Worksheet activeWorksheet = ((Excel.Worksheet)Application.ActiveSheet);
+            Excel.Range firstRow = activeWorksheet.get_Range("A1");
+            firstRow.EntireRow.Insert(Excel.XlInsertShiftDirection.xlShiftDown);
+            Excel.Range newFirstRow = activeWorksheet.get_Range("A1");
+            newFirstRow.Value2 = "This text was added by using code";
+        }
+
+
     }
 }
